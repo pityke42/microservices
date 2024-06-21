@@ -1,0 +1,11 @@
+spring:
+  config:
+    import: optional:configserver:http://localhost:9876
+  application:
+    name: discovery-service
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: false
+    fetch-registry: false

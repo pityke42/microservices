@@ -1,13 +1,15 @@
 services:
   postgres:
-    container_name: microservice_postgres
+    container_name: microservice_postgres ##pgadmin4 require the container name for the connection (hostname)
     image: postgres:16-alpine
     environment:
       POSTGRES_USER: pityke17
       POSTGRES_PASSWORD: "0402"
+      POSTGRES_DB: product_db
       PGDATA: /var/lib/postgresql/data
     volumes:
       - postgres:/data/postgres
+#      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
     networks:
@@ -17,6 +19,8 @@ services:
   pgadmin:
     container_name: microservice_pgadmin
     image: dpage/pgadmin4
+    depends_on:
+      - postgres
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin@pgadmin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}

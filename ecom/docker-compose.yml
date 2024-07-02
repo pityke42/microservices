@@ -5,11 +5,11 @@ services:
     environment:
       POSTGRES_USER: pityke17
       POSTGRES_PASSWORD: "0402"
-      POSTGRES_DB: product_db
+      POSTGRES_DB: "product_db"
       PGDATA: /var/lib/postgresql/data
     volumes:
       - postgres:/data/postgres
-#      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+#        - ${PWD}/init.sql:/docker-entrypoint-initdb.d/V1__product_database.sql
     ports:
       - "5432:5432"
     networks:
@@ -22,6 +22,7 @@ services:
     depends_on:
       - postgres
     environment:
+
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin@pgadmin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
       PGADMIN_CONFIG_SERVER_MODE: 'False'

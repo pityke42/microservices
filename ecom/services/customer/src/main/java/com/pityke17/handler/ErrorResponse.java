@@ -1,4 +1,4 @@
-package com.pityke17.exception;
+package com.pityke17.handler;
 
 import java.util.Map;
 

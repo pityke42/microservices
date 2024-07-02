@@ -1,5 +1,6 @@
-package com.pityke17.exception;
+package com.pityke17.handler;
 
+import com.pityke17.exception.CustomerNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

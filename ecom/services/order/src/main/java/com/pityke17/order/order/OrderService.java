@@ -4,6 +4,8 @@ import com.pityke17.order.customer.CustomerClient;
 import com.pityke17.order.exception.BusinessException;
 import com.pityke17.order.kafka.OrderConfirmation;
 import com.pityke17.order.kafka.OrderProducer;
+import com.pityke17.order.payment.PaymentClient;
+import com.pityke17.order.payment.PaymentRequest;
 import com.pityke17.order.product.ProductClient;
 import com.pityke17.order.product.PurchaseRequest;
 import jakarta.persistence.EntityNotFoundException;
@@ -22,18 +24,18 @@ public class OrderService {
     private final OrderMapper mapper;
     private final OrderLineService orderLineService;
     private final OrderProducer orderProducer;
-
+    private final PaymentClient paymentClient;
 
 
     public Integer createOrder(OrderRequest request) {
         //customer check
         var customer = this.customerClient.findCustomerById(request.customerId())
-                .orElseThrow(()-> new BusinessException("Cannot create order:: No customer exist with the provided id"));
+                .orElseThrow(() -> new BusinessException("Cannot create order:: No customer exist with the provided id"));
         //product purchase-> product microservice
-         var purchasedProducts = this.productClient.purchaseProducts(request.products());
+        var purchasedProducts = this.productClient.purchaseProducts(request.products());
         //persist order
         var order = this.repository.save(mapper.toOrder(request));
-        for(PurchaseRequest purchaseRequest : request.products()){
+        for (PurchaseRequest purchaseRequest : request.products()) {
             orderLineService.saveOrderLine(
                     new OrderLineRequest(
                             null,
@@ -43,6 +45,14 @@ public class OrderService {
                     )
             );
         }
+        var paymentRequest = new PaymentRequest(
+                request.amount(),
+                request.paymentMethod(),
+                order.getId(),
+                order.getReference(),
+                customer
+        );
+        paymentClient.requestOrderPayment(paymentRequest);
 
         orderProducer.sendOrderConfirmation(
                 new OrderConfirmation(
@@ -66,6 +76,6 @@ public class OrderService {
     public OrderResponse findById(Integer orderId) {
         return repository.findById(orderId)
                 .map(mapper::fromOrder)
-                .orElseThrow(()-> new EntityNotFoundException(String.format("No order with the provided id: %d", orderId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format("No order with the provided id: %d", orderId)));
     }
 }

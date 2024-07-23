@@ -11,6 +11,7 @@
         <option value="$PROJECT_DIR$/ecom/services/product/pom.xml" />
         <option value="$PROJECT_DIR$/ecom/services/order/pom.xml" />
         <option value="$PROJECT_DIR$/ecom/services/payment/pom.xml" />
+        <option value="$PROJECT_DIR$/ecom/services/notification/pom.xml" />
       </list>
     </option>
   </component>
